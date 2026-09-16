@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A local-only explorer for Apple Intelligence JSON reports."
+    />
+    <title>Apple Intelligence Report Explorer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Apple Intelligence Report Explorer home">
+          <span>
+            <span class="brand-kicker">Apple Intelligence / Local analysis</span>
+            <span class="brand-name">Report Explorer</span>
+          </span>
+        </a>
+
+        <div class="header-meta">
+          <span class="privacy-chip">
+            <span class="privacy-dot" aria-hidden="true"></span>
+            Local-only
+          </span>
+          <span class="version-chip">Ready</span>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="empty-state" id="emptyState" aria-labelledby="emptyTitle">
+          <div class="eyebrow"><span class="eyebrow-line"></span>Report analysis / Local workstation</div>
+          <h1 id="emptyTitle">Apple Intelligence report, parsed clearly.</h1>
+          <p class="hero-copy">
+            Open a JSON export to review model activity, Private Cloud Compute traces, and the
+            fields worth keeping. The file never leaves this browser tab.
+          </p>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="fileInput">
+            <input id="fileInput" type="file" accept=".json,application/json" hidden />
+            <div class="dropzone-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="presentation">
+                <path d="M24 33V10m0 0-8 8m8-8 8 8" />
+                <path d="M12 27.5H9.5a4 4 0 0 0-4 4v4a4 4 0 0 0 4 4h29a4 4 0 0 0 4-4v-4a4 4 0 0 0-4-4H36" />
+                <path d="M14 39.5h20" />
+              </svg>
+            </div>
+            <div class="dropzone-copy">
+              <strong>Drop a JSON report here</strong>
+              <span>or browse this device</span>
+            </div>
+            <button class="button button-primary" id="chooseFile" type="button">Choose report</button>
+          </div>
+          <p class="local-note">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.2 16 4.5v4.2c0 4.1-2.5 7.2-6 9.1-3.5-1.9-6-5-6-9.1V4.5l6-2.3Z" /><path d="m7.2 9.9 1.8 1.8 3.9-4" /></svg>
+            Your file stays in this browser tab. Nothing is uploaded.
+          </p>
+
+          <div class="empty-guide">
+            <article class="guide-card">
+              <span class="guide-number">01 / REVIEW</span>
+              <h2>Request activity</h2>
+              <p>Read timestamps, use cases, model versions, request excerpts, and payload sizes.</p>
+            </article>
+            <article class="guide-card">
+              <span class="guide-number">02 / VERIFY</span>
+              <h2>Infrastructure</h2>
+              <p>Decode pipeline parameters and inspect node state without losing the raw record.</p>
+            </article>
+            <article class="guide-card">
+              <span class="guide-number">03 / MAP</span>
+              <h2>Schema</h2>
+              <p>Inspect every key, type, and frequency so the extraction boundary is obvious.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="workspace" id="workspace" hidden aria-live="polite">
+          <div class="workspace-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-line"></span>Analysis / Active file</div>
+              <h1 id="reportTitle">Report</h1>
+              <p class="report-meta" id="reportMeta"></p>
+            </div>
+            <div class="workspace-actions">
+              <span class="file-size" id="fileSize"></span>
+              <button class="button button-secondary" id="openAnother" type="button">Open another</button>
+            </div>
+          </div>
+
+          <div class="privacy-banner">
+            <span class="privacy-banner-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="presentation"><path d="M12 3.5 19 6v4.9c0 4.8-2.9 8.5-7 10.6-4.1-2.1-7-5.8-7-10.6V6l7-2.5Z" /><path d="m8.8 12 2.1 2.1 4.5-4.6" /></svg>
+            </span>
+            <span><strong>Private by design.</strong> Parsing happens locally in this tab; no network request is needed.</span>
+          </div>
+
+          <div class="stat-grid" id="summaryStats"></div>
+
+          <div class="overview-grid">
+            <section class="panel extraction-panel" aria-labelledby="extractionTitle">
+              <div class="panel-heading">
+                <div>
+                  <div class="section-label">Field policy</div>
+                  <h2 id="extractionTitle">Keep the useful fields visible.</h2>
+                </div>
+                <span class="panel-index">A</span>
+              </div>
+              <div class="extraction-columns">
+                <div class="extraction-column">
+                  <div class="column-label keep-label"><span></span>Clean view</div>
+                  <ul class="field-list" id="keepFields"></ul>
+                </div>
+                <div class="extraction-column muted-column">
+                  <div class="column-label inspect-label"><span></span>Inspect on demand</div>
+                  <ul class="field-list" id="inspectFields"></ul>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel pulse-panel" aria-labelledby="pulseTitle">
+              <div class="panel-heading">
+                <div>
+                  <div class="section-label">Operational summary</div>
+                  <h2 id="pulseTitle">A compact system snapshot.</h2>
+                </div>
+                <span class="panel-index">B</span>
+              </div>
+              <div class="pulse-list" id="pulseList"></div>
+            </section>
+          </div>
+
+          <div class="tabs-wrap">
+            <div class="tabs" role="tablist" aria-label="Report views">
+              <button class="tab is-active" id="flow-tab" role="tab" aria-selected="true" aria-controls="panel-flow" data-tab="flow" type="button">Session flow</button>
+              <button class="tab" id="overview-tab" role="tab" aria-selected="false" aria-controls="panel-overview" data-tab="overview" type="button">Overview</button>
+              <button class="tab" id="schema-tab" role="tab" aria-selected="false" aria-controls="panel-schema" data-tab="schema" type="button">Schema</button>
+              <button class="tab" id="models-tab" role="tab" aria-selected="false" aria-controls="panel-models" data-tab="models" type="button">Model requests</button>
+              <button class="tab" id="pcc-tab" role="tab" aria-selected="false" aria-controls="panel-pcc" data-tab="pcc" type="button">PCC requests</button>
+            </div>
+          </div>
+
+          <section class="tab-panel is-visible" id="panel-flow" role="tabpanel" aria-labelledby="flow-tab">
+            <div class="panel table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <div class="section-label">Session timeline</div>
+                  <h2>How information flowed, step by step.</h2>
+                </div>
+                <span class="table-count" id="flowCount"></span>
+              </div>
+              <p class="table-intro">Events run in time order down the rail. A device request that Private Cloud Compute handled is drawn as one connected flow — request, cloud pipeline, node chain, response — and the chips on the left show how much time passed between events.</p>
+              <div class="flow-summary" id="flowSummary"></div>
+              <div class="flow-list" id="flowList"></div>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="overview-tab" hidden>
+            <div class="panel overview-note-panel">
+              <div class="note-mark" aria-hidden="true">i</div>
+              <div>
+                  <h2>Read the metadata first.</h2>
+                <p>
+                  The raw prompt and attestation fields are the largest parts of this export. They stay available below, but the useful first pass is usually timestamp, model, use case, token range, node status, and correlation ID.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-schema" role="tabpanel" hidden>
+            <div class="panel table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <div class="section-label">Field inventory</div>
+                  <h2>Every path, typed and counted.</h2>
+                </div>
+                <span class="table-count" id="schemaCount"></span>
+              </div>
+              <p class="table-intro">Optional fields are shown as partial; long strings are summarized by size instead of rendered into the inventory.</p>
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr><th>Path</th><th>Type</th><th>Presence</th><th>Observed shape</th></tr>
+                  </thead>
+                  <tbody id="schemaTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-models" role="tabpanel" hidden>
+            <div class="panel table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <div class="section-label">Model activity</div>
+                  <h2>Requests, without the scroll.</h2>
+                </div>
+                <span class="table-count" id="modelCount"></span>
+              </div>
+              <p class="table-intro">Every row shows a readable request excerpt. Open a row for the full prompt, response, and metadata; payloads are rendered as text, never as HTML.</p>
+              <div class="record-list" id="modelRecords"></div>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="panel-pcc" role="tabpanel" hidden>
+            <div class="panel table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <div class="section-label">Private Cloud Compute</div>
+                  <h2>Pipeline parameters and node health.</h2>
+                </div>
+                <span class="table-count" id="pccCount"></span>
+              </div>
+              <p class="table-intro">The nested <code>pipelineParameters</code> string is decoded into readable fields; cryptographic blobs remain collapsed.</p>
+              <div class="record-list" id="pccRecords"></div>
+            </div>
+          </section>
+        </section>
+
+        <div class="error-toast" id="errorToast" role="alert" hidden>
+          <span class="error-icon" aria-hidden="true">!</span>
+          <span id="errorMessage"></span>
+          <button type="button" id="dismissError" aria-label="Dismiss error">×</button>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <span>Apple Intelligence Report Explorer</span>
+        <span>Runs in your browser · No upload · Static site ready</span>
+      </footer>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
