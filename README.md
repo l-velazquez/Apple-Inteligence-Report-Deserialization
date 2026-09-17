@@ -20,6 +20,8 @@ The clean extraction should center on:
 
 Keep `prompt` and `response` available but collapsed because they contain private conversation context and custom control markup. Treat `attestationBundle`, `node`, `proxiedBy`, and `assetHash` as opaque technical values; they are useful for forensic inspection but add noise to the default view.
 
+The default **Session flow** view is the starting point for understanding a report. It includes an aggregate device → PCC → result route map, chronological event cards, request-ID correlation notes, and filters for connected journeys, device-only records, and cloud-only records.
+
 ## Run locally
 
 ```bash

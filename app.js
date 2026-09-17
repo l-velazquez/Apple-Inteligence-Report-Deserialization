@@ -22,8 +22,14 @@
     pccCount: document.getElementById("pccCount"),
     pccRecords: document.getElementById("pccRecords"),
     flowCount: document.getElementById("flowCount"),
+    flowMap: document.getElementById("flowMap"),
     flowSummary: document.getElementById("flowSummary"),
     flowList: document.getElementById("flowList"),
+    flowAllCount: document.getElementById("flowAllCount"),
+    flowLinkedCount: document.getElementById("flowLinkedCount"),
+    flowDeviceCount: document.getElementById("flowDeviceCount"),
+    flowCloudCount: document.getElementById("flowCloudCount"),
+    flowFilters: [...document.querySelectorAll(".flow-filter")],
     errorToast: document.getElementById("errorToast"),
     errorMessage: document.getElementById("errorMessage"),
     dismissError: document.getElementById("dismissError"),
@@ -36,6 +42,7 @@
     analysis: null,
     fileName: "",
     fileSize: 0,
+    flowFilter: "all",
   };
 
   const modelMetadataFields = [
@@ -145,6 +152,11 @@
     return `${minutes}m ${String(remainder).padStart(2, "0")}s`;
   }
 
+  function formatElapsed(seconds) {
+    const value = Math.max(0, Number(seconds) || 0);
+    return value < 1 ? "under 1s" : formatDuration(value);
+  }
+
   function formatModel(value) {
     const raw = String(value || "");
     if (raw.includes("conversation_title_summarization")) return "Title summarization";
@@ -209,12 +221,26 @@
       .replace(/<standalone_answer>/g, " ")
       .replace(/<\/standalone_answer>/g, " ")
       .replace(/<ui_entity_rendering[^>]*\/?\s*>/g, " ")
+      .replace(/<\/?(?:link|citation)[^>]*>/g, " ")
       .replace(/\s+/g, " ")
       .trim();
   }
 
   function extractRequestText(value) {
     const source = String(value || "");
+
+    // Siri planner records wrap the real utterance in a structured user_request
+    // block. Prefer it so the default view never leads with platform instructions.
+    const requestStart = source.lastIndexOf("<user_request>");
+    const requestEnd = requestStart >= 0 ? source.indexOf("</user_request>", requestStart) : -1;
+    if (requestStart >= 0 && requestEnd > requestStart) {
+      const block = source.slice(requestStart + "<user_request>".length, requestEnd);
+      const hypotheses = [...block.matchAll(/<hypothesis>([\s\S]*?)<\/hypothesis>/g)];
+      const selected = hypotheses.length ? hypotheses[0][1] : block;
+      const readable = cleanRequestText(selected);
+      if (readable) return readable;
+    }
+
     const segments = [];
     const turnPattern = /<start_of_turn>user(?:\r?\n)?([\s\S]*?)(?=<start_of_turn>|<end_of_turn>|$)/g;
     const controlPattern = /<ctrl99>user(?:\r?\n)?([\s\S]*?)(?=<ctrl99>model|<ctrl99>assistant|<end_of_turn>|$)/g;
@@ -414,6 +440,7 @@
       duration: minTimestamp === null || maxTimestamp === null ? 0 : maxTimestamp - minTimestamp,
       flowEvents,
       linkedTurns: flowEvents.filter((event) => event.kind === "turn" && event.pipelines.length).length,
+      deviceOnlyEvents: flowEvents.filter((event) => event.kind === "turn" && !event.pipelines.length).length,
       cloudOnlyEvents: flowEvents.filter((event) => event.kind === "cloud").length,
     };
   }
@@ -848,16 +875,18 @@
 
   function renderFlowSummary(analysis) {
     clear(dom.flowSummary);
-    addFlowChip(dom.flowSummary, formatNumber(analysis.modelRequests.length), "device requests");
-    addFlowChip(dom.flowSummary, formatNumber(analysis.linkedTurns), "handled in the cloud");
-    addFlowChip(dom.flowSummary, formatNumber(analysis.cloudOnlyEvents), "cloud-only pipelines");
+    addFlowChip(dom.flowSummary, formatNumber(analysis.modelRequests.length), "device records");
+    addFlowChip(dom.flowSummary, formatNumber(analysis.linkedTurns), "connected journeys");
+    addFlowChip(dom.flowSummary, formatNumber(analysis.deviceOnlyEvents), "device only");
+    addFlowChip(dom.flowSummary, formatNumber(analysis.cloudOnlyEvents), "cloud only");
     addFlowChip(dom.flowSummary, formatNumber(analysis.nodes.length), "node executions");
     addFlowChip(dom.flowSummary, formatDuration(analysis.duration), "session span");
   }
 
-  function createFlowStage(kind, title) {
+  function createFlowStage(kind, title, step) {
     const stage = el("section", `flow-stage k-${kind}`);
     const heading = el("div", "flow-stage-title");
+    if (step) heading.append(el("span", "stage-step", step));
     const dot = el("span", "stage-dot");
     dot.setAttribute("aria-hidden", "true");
     heading.append(dot, el("span", null, title));
@@ -875,8 +904,10 @@
     stage.append(facts);
   }
 
-  function addFlowExcerpt(stage, text, emptyText) {
-    stage.append(el("p", `flow-excerpt${text ? "" : " is-empty"}`, text || emptyText));
+  function addFlowExcerpt(stage, text, emptyText, label = "Excerpt") {
+    const excerpt = el("div", `flow-excerpt${text ? "" : " is-empty"}`);
+    excerpt.append(el("span", "flow-excerpt-label", label), el("p", "flow-excerpt-text", text || emptyText));
+    stage.append(excerpt);
   }
 
   function addNodeChain(stage, pccRequest) {
@@ -892,7 +923,7 @@
   }
 
   function buildDeviceStage(request) {
-    const stage = createFlowStage("device", "On-device request");
+    const stage = createFlowStage("device", "Request on device", "01");
     addFlowFacts(stage, [
       { label: "Use case", value: formatUseCase(request.useCase) },
       { label: "Model", value: formatModel(request.model) },
@@ -903,19 +934,31 @@
       stage,
       excerpt.startsWith("No readable") ? "" : excerpt,
       "No readable user excerpt; the serialized prompt is available in Model requests.",
+      "Request excerpt",
     );
     return stage;
   }
 
-  function buildCloudStage(request) {
+  function buildCloudStage(request, deviceTimestamp, pipelineNumber) {
     const params = parsePipelineParameters(request);
-    const stage = createFlowStage("cloud", "Private Cloud Compute");
+    const stageTitle = pipelineNumber ? `Compute in PCC · ${pipelineNumber}` : "Compute in PCC";
+    const stage = createFlowStage("cloud", stageTitle, deviceTimestamp === undefined ? "01" : "02");
     const facts = [
       { label: "Pipeline", value: request.pipelineKind || "Not recorded" },
       { label: "Model", value: params && params.model ? formatModel(params.model) : "Unknown pipeline" },
       { label: "Adapter", value: params && params.adapter ? formatModel(params.adapter) : "Not recorded" },
       { label: "requestId", value: compactIdentifier(request.requestId), mono: true },
     ];
+    const handoffDelay = Number(request && request.timestamp) - Number(deviceTimestamp);
+    if (deviceTimestamp !== undefined && Number.isFinite(handoffDelay)) {
+      const delayLabel = handoffDelay < 1
+        ? "under 1s after request"
+        : `+${formatElapsed(handoffDelay)} after request`;
+      facts.push({
+        label: "PCC record logged",
+        value: handoffDelay >= 0 ? delayLabel : "before request",
+      });
+    }
     if (params && params["input-token-count-interval-start-closed"] !== undefined) {
       facts.push({
         label: "Input tokens",
@@ -931,30 +974,145 @@
   }
 
   function buildResponseStage(request) {
-    const stage = createFlowStage("response", "Response returned");
+    const stage = createFlowStage("response", "Result recorded", "03");
     const raw = String(request.response || "");
     addFlowFacts(stage, [{ label: "Size", value: `${formatCompactCount(raw.length)} chars` }]);
-    addFlowExcerpt(stage, responseExcerpt(raw), "The response was empty or unreadable.");
+    const emptyText = raw.trim()
+      ? "No readable response text; an opaque model signature was recorded."
+      : "No response text was recorded.";
+    addFlowExcerpt(stage, responseExcerpt(raw), emptyText, "Response excerpt");
     return stage;
   }
 
+  function readableResponseText(value) {
+    const raw = String(value || "");
+    const answers = [...raw.matchAll(/<standalone_answer>([\s\S]*?)<\/standalone_answer>/g)];
+    const candidate = answers.length ? answers[answers.length - 1][1] : raw;
+    const text = cleanRequestText(candidate);
+    return /^thought_signature\s*:/i.test(text) ? "" : text;
+  }
+
   function responseExcerpt(value, limit = 200) {
-    const text = cleanRequestText(value);
+    const text = readableResponseText(value);
     if (!text) return "";
     return text.length > limit ? `${text.slice(0, limit - 1)}…` : text;
   }
 
-  function flowArrow() {
+  function flowArrow(label) {
     const arrow = el("div", "flow-arrow");
     arrow.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h12m0 0-4.5-4.5M15.5 10 11 14.5" /></svg>';
+    if (label) arrow.append(el("span", "flow-arrow-label", label));
     return arrow;
   }
 
-  function buildFlowEvent(event, previousTimestamp) {
+  function createFlowMapNode(kind, step, title, value, detail) {
+    const node = el("div", `flow-map-node k-${kind}`);
+    const marker = el("span", "flow-map-step", step);
+    const copy = el("div", "flow-map-node-copy");
+    copy.append(
+      el("span", "flow-map-node-title", title),
+      el("strong", "flow-map-node-value", value),
+      el("span", "flow-map-node-detail", detail),
+    );
+    node.append(marker, copy);
+    return node;
+  }
+
+  function createFlowMapConnector(label) {
+    const connector = el("div", "flow-map-connector");
+    connector.append(el("span", "flow-map-connector-line"), el("span", "flow-map-connector-label", label));
+    return connector;
+  }
+
+  function renderFlowMap(analysis) {
+    clear(dom.flowMap);
+    const readableResponses = analysis.modelRequests.filter((request) => readableResponseText(request && request.response)).length;
+    const emptyResponses = Math.max(0, analysis.modelRequests.length - readableResponses);
+
+    const heading = el("div", "flow-map-heading");
+    const headingCopy = el("div", "flow-map-heading-copy");
+    headingCopy.append(
+      el("span", "flow-map-label", "Route map"),
+      el("strong", null, "Device → PCC → result."),
+    );
+    heading.append(headingCopy, el("span", "flow-map-range", formatDateRange(analysis.minTimestamp, analysis.maxTimestamp)));
+
+    const route = el("div", "flow-map-route");
+    route.append(
+      createFlowMapNode(
+        "device",
+        "01",
+        "On device",
+        `${formatNumber(analysis.modelRequests.length)} requests`,
+        `${formatNumber(analysis.deviceOnlyEvents)} stay on device`,
+      ),
+      createFlowMapConnector("request ID match"),
+      createFlowMapNode(
+        "cloud",
+        "02",
+        "Private Cloud Compute",
+        `${formatNumber(analysis.linkedTurns)} connected`,
+        `${formatNumber(analysis.cloudOnlyEvents)} cloud-only records`,
+      ),
+      createFlowMapConnector("result recorded"),
+      createFlowMapNode(
+        "result",
+        "03",
+        "Model result",
+        `${formatNumber(readableResponses)} recorded`,
+        `${formatNumber(emptyResponses)} empty or opaque`,
+      ),
+    );
+
+    const foot = el("div", "flow-map-foot");
+    foot.append(
+      el("span", null, "The map aggregates the records below."),
+      el("span", "flow-map-foot-key", "↔ = identifier matched to requestId"),
+    );
+    dom.flowMap.append(heading, route, foot);
+  }
+
+  function eventMatchesFlowFilter(event, filter) {
+    const linked = event.kind === "turn" && event.pipelines.length > 0;
+    if (filter === "linked") return linked;
+    if (filter === "device") return event.kind === "turn" && !linked;
+    if (filter === "cloud") return event.kind === "cloud";
+    return true;
+  }
+
+  function updateFlowFilters(analysis) {
+    const counts = {
+      all: analysis.flowEvents.length,
+      linked: analysis.linkedTurns,
+      device: analysis.deviceOnlyEvents,
+      cloud: analysis.cloudOnlyEvents,
+    };
+    const countTargets = {
+      all: dom.flowAllCount,
+      linked: dom.flowLinkedCount,
+      device: dom.flowDeviceCount,
+      cloud: dom.flowCloudCount,
+    };
+    dom.flowFilters.forEach((button) => {
+      const filter = button.dataset.flowFilter;
+      const active = filter === state.flowFilter;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+      if (countTargets[filter]) countTargets[filter].textContent = counts[filter];
+    });
+  }
+
+  function setFlowFilter(filter) {
+    state.flowFilter = filter;
+    renderFlow();
+  }
+
+  function buildFlowEvent(event, previousTimestamp, sequenceNumber) {
     const linked = event.kind === "turn" && event.pipelines.length > 0;
     const wrap = el("article", `flow-event kind-${event.kind}${linked ? " is-linked" : ""}`);
 
     const time = el("div", "flow-time");
+    time.append(el("span", "flow-step-label", `STEP ${String(sequenceNumber).padStart(2, "0")}`));
     time.append(el("strong", null, formatClock(event.timestamp)));
     if (previousTimestamp !== null) {
       const delta = Math.max(0, Math.round(event.timestamp - previousTimestamp));
@@ -972,21 +1130,28 @@
       : (() => {
           const params = parsePipelineParameters(request);
           return (params && params.model ? formatModel(params.model) : null) || request.pipelineKind || "Cloud pipeline";
-        })();
-    header.append(el("h3", "flow-card-title", title));
-    header.append(el("span", `kind-chip ${linked ? "kind-linked" : event.kind === "turn" ? "kind-device" : "kind-cloud"}`, linked ? "Device → Cloud" : event.kind === "turn" ? "Device only" : "Cloud only"));
+          })();
+    const headingCopy = el("div", "flow-card-heading-copy");
+    const subtitle = linked
+      ? `${event.pipelines.length} PCC record${event.pipelines.length === 1 ? "" : "s"} matched to this request`
+      : event.kind === "turn"
+        ? "No matching PCC requestId was recorded"
+        : "No matching model identifier was recorded";
+    headingCopy.append(el("h3", "flow-card-title", title), el("p", "flow-card-subtitle", subtitle));
+    header.append(headingCopy);
+    header.append(el("span", `kind-chip ${linked ? "kind-linked" : event.kind === "turn" ? "kind-device" : "kind-cloud"}`, linked ? "Device ↔ PCC" : event.kind === "turn" ? "Device only" : "Cloud only"));
     card.append(header);
 
     const stages = el("div", "flow-stages");
     if (event.kind === "turn") {
       stages.append(buildDeviceStage(request));
       if (linked) {
-        stages.append(flowArrow());
+        stages.append(flowArrow("handoff"));
         event.pipelines.forEach((pipeline, index) => {
-          if (index) stages.append(flowArrow());
-          stages.append(buildCloudStage(pipeline));
+          if (index) stages.append(flowArrow("next"));
+          stages.append(buildCloudStage(pipeline, request.timestamp, event.pipelines.length > 1 ? index + 1 : null));
         });
-        stages.append(flowArrow());
+        stages.append(flowArrow("return"));
       }
       stages.append(buildResponseStage(request));
     } else {
@@ -994,22 +1159,41 @@
     }
     card.append(stages);
 
+    const footer = el("div", "flow-card-footer");
+    if (linked) {
+      const delays = event.pipelines
+        .map((pipeline) => Number(pipeline && pipeline.timestamp) - Number(request && request.timestamp))
+        .filter(Number.isFinite);
+      const delayText = delays.length ? ` · PCC logged ${formatElapsed(Math.max(...delays))} later` : "";
+      footer.append(el("span", "flow-card-note is-linked", `Matched by identifier ↔ requestId${delayText}`));
+    } else if (event.kind === "turn") {
+      footer.append(el("span", "flow-card-note", "This request has no linked PCC record in the report."));
+    } else {
+      footer.append(el("span", "flow-card-note is-cloud", "This PCC record has no matching model request in the report."));
+    }
+    card.append(footer);
+
     wrap.append(time, rail, card);
     return wrap;
   }
 
   function renderFlow() {
     const analysis = state.analysis;
+    renderFlowMap(analysis);
+    updateFlowFilters(analysis);
     renderFlowSummary(analysis);
-    dom.flowCount.textContent = `${formatNumber(analysis.flowEvents.length)} events`;
+    const visibleEvents = analysis.flowEvents.filter((event) => eventMatchesFlowFilter(event, state.flowFilter));
+    dom.flowCount.textContent = state.flowFilter === "all"
+      ? `${formatNumber(visibleEvents.length)} events`
+      : `${formatNumber(visibleEvents.length)} of ${formatNumber(analysis.flowEvents.length)} events`;
     clear(dom.flowList);
-    if (!analysis.flowEvents.length) {
-      dom.flowList.append(el("div", "empty-table", "No timestamped events were found in this report."));
+    if (!visibleEvents.length) {
+      dom.flowList.append(el("div", "empty-table", "No events match this view."));
       return;
     }
     let previousTimestamp = null;
-    analysis.flowEvents.forEach((event) => {
-      dom.flowList.append(buildFlowEvent(event, previousTimestamp));
+    visibleEvents.forEach((event, index) => {
+      dom.flowList.append(buildFlowEvent(event, previousTimestamp, index + 1));
       previousTimestamp = event.timestamp;
     });
   }
@@ -1034,6 +1218,7 @@
     dom.reportTitle.textContent = state.fileName;
     dom.reportMeta.textContent = `${formatNumber(analysis.modelRequests.length)} model requests · ${formatNumber(analysis.pccRequests.length)} PCC requests · ${formatDateRange(analysis.minTimestamp, analysis.maxTimestamp)}`;
     dom.fileSize.textContent = formatBytes(state.fileSize);
+    state.flowFilter = "all";
     renderStats();
     renderFlow();
     renderOverview();
@@ -1075,4 +1260,5 @@
     loadFile(file);
   });
   dom.tabs.forEach((tab) => tab.addEventListener("click", () => setTab(tab.dataset.tab)));
+  dom.flowFilters.forEach((button) => button.addEventListener("click", () => setFlowFilter(button.dataset.flowFilter)));
 })();

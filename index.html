@@ -8,7 +8,7 @@
       content="A local-only explorer for Apple Intelligence JSON reports."
     />
     <title>Apple Intelligence Report Explorer</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=3" />
   </head>
   <body>
     <div class="app-shell">
@@ -99,6 +99,52 @@
 
           <div class="stat-grid" id="summaryStats"></div>
 
+          <div class="tabs-wrap">
+            <div class="tabs" role="tablist" aria-label="Report views">
+              <button class="tab is-active" id="flow-tab" role="tab" aria-selected="true" aria-controls="panel-flow" data-tab="flow" type="button">Session flow</button>
+              <button class="tab" id="overview-tab" role="tab" aria-selected="false" aria-controls="panel-overview" data-tab="overview" type="button">Overview</button>
+              <button class="tab" id="schema-tab" role="tab" aria-selected="false" aria-controls="panel-schema" data-tab="schema" type="button">Schema</button>
+              <button class="tab" id="models-tab" role="tab" aria-selected="false" aria-controls="panel-models" data-tab="models" type="button">Model requests</button>
+              <button class="tab" id="pcc-tab" role="tab" aria-selected="false" aria-controls="panel-pcc" data-tab="pcc" type="button">PCC requests</button>
+            </div>
+          </div>
+
+          <section class="tab-panel is-visible" id="panel-flow" role="tabpanel" aria-labelledby="flow-tab">
+            <div class="panel table-panel">
+              <div class="panel-heading table-heading">
+                <div>
+                  <div class="section-label">Session timeline</div>
+                  <h2>Follow the session, step by step.</h2>
+                </div>
+                <span class="table-count" id="flowCount"></span>
+              </div>
+              <p class="table-intro">Start with the route map, then read the numbered events in time order. A blue journey connects a device request to its matching Private Cloud Compute record through the request ID.</p>
+              <div class="flow-brief">
+                <div class="flow-brief-copy">
+                  <span class="flow-brief-label">How to read this view</span>
+                  <p>Each row represents one chronological record or connected journey. Blue rows show a matched handoff, gray rows stay on the device, and amber rows are cloud records without a matching device request.</p>
+                </div>
+                <div class="flow-legend" aria-label="Session flow legend">
+                  <span class="legend-item"><span class="legend-swatch is-linked" aria-hidden="true"></span>Device ↔ cloud</span>
+                  <span class="legend-item"><span class="legend-swatch is-device" aria-hidden="true"></span>Device only</span>
+                  <span class="legend-item"><span class="legend-swatch is-cloud" aria-hidden="true"></span>Cloud only</span>
+                </div>
+              </div>
+              <div class="flow-map" id="flowMap" aria-label="Session route summary"></div>
+              <div class="flow-controls">
+                <span class="flow-controls-label">Show</span>
+                <div class="flow-filters" role="group" aria-label="Filter session events">
+                  <button class="flow-filter is-active" type="button" data-flow-filter="all" aria-pressed="true">All <span id="flowAllCount"></span></button>
+                  <button class="flow-filter" type="button" data-flow-filter="linked" aria-pressed="false">Connected journeys <span id="flowLinkedCount"></span></button>
+                  <button class="flow-filter" type="button" data-flow-filter="device" aria-pressed="false">Device only <span id="flowDeviceCount"></span></button>
+                  <button class="flow-filter" type="button" data-flow-filter="cloud" aria-pressed="false">Cloud only <span id="flowCloudCount"></span></button>
+                </div>
+              </div>
+              <div class="flow-summary" id="flowSummary"></div>
+              <div class="flow-list" id="flowList"></div>
+            </div>
+          </section>
+
           <div class="overview-grid">
             <section class="panel extraction-panel" aria-labelledby="extractionTitle">
               <div class="panel-heading">
@@ -131,31 +177,6 @@
               <div class="pulse-list" id="pulseList"></div>
             </section>
           </div>
-
-          <div class="tabs-wrap">
-            <div class="tabs" role="tablist" aria-label="Report views">
-              <button class="tab is-active" id="flow-tab" role="tab" aria-selected="true" aria-controls="panel-flow" data-tab="flow" type="button">Session flow</button>
-              <button class="tab" id="overview-tab" role="tab" aria-selected="false" aria-controls="panel-overview" data-tab="overview" type="button">Overview</button>
-              <button class="tab" id="schema-tab" role="tab" aria-selected="false" aria-controls="panel-schema" data-tab="schema" type="button">Schema</button>
-              <button class="tab" id="models-tab" role="tab" aria-selected="false" aria-controls="panel-models" data-tab="models" type="button">Model requests</button>
-              <button class="tab" id="pcc-tab" role="tab" aria-selected="false" aria-controls="panel-pcc" data-tab="pcc" type="button">PCC requests</button>
-            </div>
-          </div>
-
-          <section class="tab-panel is-visible" id="panel-flow" role="tabpanel" aria-labelledby="flow-tab">
-            <div class="panel table-panel">
-              <div class="panel-heading table-heading">
-                <div>
-                  <div class="section-label">Session timeline</div>
-                  <h2>How information flowed, step by step.</h2>
-                </div>
-                <span class="table-count" id="flowCount"></span>
-              </div>
-              <p class="table-intro">Events run in time order down the rail. A device request that Private Cloud Compute handled is drawn as one connected flow — request, cloud pipeline, node chain, response — and the chips on the left show how much time passed between events.</p>
-              <div class="flow-summary" id="flowSummary"></div>
-              <div class="flow-list" id="flowList"></div>
-            </div>
-          </section>
 
           <section class="tab-panel" id="panel-overview" role="tabpanel" aria-labelledby="overview-tab" hidden>
             <div class="panel overview-note-panel">
@@ -232,6 +253,6 @@
       </footer>
     </div>
 
-    <script src="app.js" defer></script>
+    <script src="app.js?v=3" defer></script>
   </body>
 </html>
