@@ -3,11 +3,102 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apple Intelligence JSON Report Explorer | Private Analyzer</title>
     <meta
       name="description"
-      content="A local-only explorer for Apple Intelligence JSON reports."
+      content="A free, private Apple Intelligence JSON report explorer. Analyze model requests, Private Cloud Compute traces, request IDs, token ranges, and schema fields locally in your browser."
     />
-    <title>Apple Intelligence Report Deserializer</title>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#f3f4f5" />
+    <link rel="canonical" href="https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/" />
+    <link rel="sitemap" type="application/xml" href="sitemap.xml" />
+    <link rel="alternate" type="text/plain" href="llms.txt" title="LLM-friendly site summary" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/" />
+    <meta property="og:title" content="Apple Intelligence JSON Report Explorer" />
+    <meta
+      property="og:description"
+      content="Inspect Apple Intelligence model activity, Private Cloud Compute traces, and report schemas locally—your JSON file never leaves the browser."
+    />
+    <meta property="og:site_name" content="Apple Intelligence Report Explorer" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Apple Intelligence JSON Report Explorer" />
+    <meta
+      name="twitter:description"
+      content="A private, local-only viewer for Apple Intelligence JSON reports, model requests, PCC traces, and schema fields."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "@id": "https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/#application",
+            "name": "Apple Intelligence Report Explorer",
+            "alternateName": "Apple Intelligence Report Deserializer",
+            "url": "https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/",
+            "description": "A free, local-only browser application for exploring Apple Intelligence JSON reports, model requests, Private Cloud Compute traces, and report schemas.",
+            "applicationCategory": "DeveloperApplication",
+            "applicationSubCategory": "JSON report analysis",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires a modern browser with JavaScript enabled.",
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Local JSON parsing",
+              "Apple Intelligence model request analysis",
+              "Private Cloud Compute request correlation",
+              "Schema field inventory",
+              "Pipeline parameter decoding"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/#website",
+            "url": "https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/",
+            "name": "Apple Intelligence Report Explorer",
+            "description": "Documentation and browser-based tooling for inspecting Apple Intelligence JSON reports."
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Does the Apple Intelligence report explorer upload my file?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. The report is read and parsed in your browser tab. The application has no upload endpoint and does not need a network request to process the file."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What can I inspect in an Apple Intelligence JSON report?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can inspect model requests, timestamps, use cases, model versions, request identifiers, Private Cloud Compute pipeline parameters, node state, token ranges, response excerpts, and a typed schema inventory."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What file format does the explorer accept?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The explorer accepts a JSON export containing Apple Intelligence request collections such as modelRequests and privateCloudComputeRequests."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
     <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
@@ -33,8 +124,8 @@
               <div class="eyebrow"><span class="eyebrow-line"></span>Report analysis / Local workstation</div>
               <h1 id="emptyTitle">Apple Intelligence report, parsed clearly.</h1>
               <p class="hero-copy">
-                Open a JSON export to review model activity, Private Cloud Compute traces, and the
-                fields worth keeping. The file never leaves this browser tab.
+                Open a JSON export to analyze Apple Intelligence model activity, Private Cloud Compute
+                traces, request IDs, schema fields, and payload sizes. The file never leaves this browser tab.
               </p>
 
               <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="fileInput">
@@ -63,17 +154,67 @@
           <div class="empty-guide">
             <article class="guide-card">
               <h2>Request activity</h2>
-              <p>Read timestamps, use cases, model versions, request excerpts, and payload sizes.</p>
+              <p>Read timestamps, use cases, model versions, request excerpts, token ranges, and payload sizes.</p>
             </article>
             <article class="guide-card">
               <h2>Infrastructure</h2>
-              <p>Decode pipeline parameters and inspect node state without losing the raw record.</p>
+              <p>Decode Private Cloud Compute pipeline parameters and inspect node state without losing the raw record.</p>
             </article>
             <article class="guide-card">
-              <h2>Schema</h2>
-              <p>Inspect every key, type, and frequency so the extraction boundary is obvious.</p>
+              <h2>Schema inventory</h2>
+              <p>Inspect every key, type, and frequency so the report’s extraction boundary is obvious.</p>
             </article>
           </div>
+
+          <section class="discoverability" id="about" aria-labelledby="aboutTitle">
+            <div class="discoverability-intro">
+              <div class="eyebrow"><span class="eyebrow-line"></span>About the tool</div>
+              <h2 id="aboutTitle">A private Apple Intelligence JSON report analyzer.</h2>
+              <p>
+                This browser-based viewer turns an Apple Intelligence JSON export into a readable report.
+                It is designed for understanding model activity and the boundary between on-device
+                processing and Private Cloud Compute without sending sensitive conversation data to a server.
+              </p>
+            </div>
+
+            <div class="discoverability-grid">
+              <article class="discoverability-card">
+                <h3>Explore model activity</h3>
+                <p>Review model names, versions, use cases, clients, execution environments, timestamps, and readable request excerpts.</p>
+              </article>
+              <article class="discoverability-card">
+                <h3>Trace Private Cloud Compute</h3>
+                <p>Correlate device requests with PCC records using shared identifiers, then inspect pipeline parameters, token intervals, and node health.</p>
+              </article>
+              <article class="discoverability-card">
+                <h3>Understand the schema</h3>
+                <p>See every observed path, value type, presence rate, and shape so the structure of the JSON export is easy to document or analyze.</p>
+              </article>
+            </div>
+
+            <div class="faq-section" id="faq" aria-labelledby="faqTitle">
+              <div class="faq-heading">
+                <div class="section-label">Frequently asked questions</div>
+                <h2 id="faqTitle">Before you open a report.</h2>
+              </div>
+              <div class="faq-list">
+                <details>
+                  <summary>Does the Apple Intelligence report explorer upload my file?</summary>
+                  <p>No. The report is read and parsed in your browser tab. There is no upload endpoint, and the file does not need to leave your device.</p>
+                </details>
+                <details>
+                  <summary>What can I inspect in an Apple Intelligence JSON report?</summary>
+                  <p>You can inspect model requests, timestamps, use cases, model versions, request identifiers, Private Cloud Compute pipeline parameters, node state, token ranges, response excerpts, and a typed schema inventory.</p>
+                </details>
+                <details>
+                  <summary>What file format does the explorer accept?</summary>
+                  <p>The explorer accepts a JSON export containing Apple Intelligence request collections such as <code>modelRequests</code> and <code>privateCloudComputeRequests</code>.</p>
+                </details>
+              </div>
+            </div>
+
+            <p class="independence-note">An independent, open-source utility. Not affiliated with or endorsed by Apple.</p>
+          </section>
         </section>
 
         <section class="workspace" id="workspace" hidden aria-live="polite">
@@ -248,7 +389,7 @@
 
       <footer class="site-footer">
         <span>Apple Intelligence Report Explorer</span>
-        <span>Runs in your browser · No upload · Static site ready</span>
+        <span><a href="#about">About</a> · <a href="#faq">FAQ</a> · <a href="llms.txt">For AI agents</a> · Runs in your browser · No upload</span>
       </footer>
     </div>
 

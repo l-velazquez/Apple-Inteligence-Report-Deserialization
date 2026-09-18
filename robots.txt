@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /Apple_Intelligence_Report.json
+Disallow: /analyze_report.py
+
+Sitemap: https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/sitemap.xml

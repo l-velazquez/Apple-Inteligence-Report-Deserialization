@@ -2,6 +2,8 @@
 
 A static, local-only viewer for Apple Intelligence JSON reports. Open the page, choose a report, and the browser parses it in memory. The app has no upload endpoint and makes no network request to process a file, so it can be published as a GitHub Pages site.
 
+The public landing page includes crawlable metadata, Open Graph/Twitter cards, Schema.org structured data, a sitemap, and a short `llms.txt` guide for AI agents. These describe the tool without exposing the contents of any selected report. The SEO URLs assume the repository is published at `https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/`; update the absolute URLs in `index.html`, `robots.txt`, `sitemap.xml`, and `llms.txt` if the deployment URL changes.
+
 ## Current report shape
 
 The included export has two top-level arrays:

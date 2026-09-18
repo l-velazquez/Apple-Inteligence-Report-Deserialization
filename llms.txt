@@ -1,0 +1,33 @@
+# Apple Intelligence Report Explorer
+
+> A free, local-only browser tool for exploring Apple Intelligence JSON reports. It parses the selected file in memory so model activity, Private Cloud Compute traces, and schema fields can be inspected without uploading the report.
+
+Canonical URL: https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/
+
+## What this site is
+
+Apple Intelligence Report Explorer is a static web application for reading Apple Intelligence JSON exports. It is useful for developers, researchers, and privacy-conscious users who need a compact view of request activity and the relationship between on-device records and Private Cloud Compute records.
+
+## Capabilities
+
+- Analyze model requests, timestamps, model names, model versions, use cases, client identifiers, execution environments, request excerpts, and payload sizes.
+- Correlate device requests with Private Cloud Compute records using shared request identifiers.
+- Decode readable fields from nested `pipelineParameters`, including adapters, workflow IDs, inference IDs, input-token intervals, and output-token limits.
+- Inspect node state, asset information, request finalization, and other infrastructure metadata.
+- Inventory JSON paths with their observed types, presence, and shape.
+- Keep sensitive prompt, response, attestation, and cryptographic fields collapsed until the user opens them.
+
+## Privacy and access model
+
+The site has no report upload endpoint. A report is selected with the browser file picker or drag-and-drop and parsed locally in the active tab. The report contents are not published, indexed, or sent to a server by the application. JavaScript is required for interactive parsing.
+
+## Supported report shape
+
+The expected export includes request collections such as `modelRequests` and `privateCloudComputeRequests`. The viewer rejects files that do not contain the expected Apple Intelligence request collections.
+
+## Important links
+
+- [Apple Intelligence Report Explorer](https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/): interactive application
+- [Source repository](https://github.com/l-velazquez/Apple-Inteligence-Report-Deserialization): source code and local analyzer documentation
+- [Sitemap](https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/sitemap.xml): crawlable site URL list
+- [Robots policy](https://l-velazquez.github.io/Apple-Inteligence-Report-Deserialization/robots.txt): crawler access rules
