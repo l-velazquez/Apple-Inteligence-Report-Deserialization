@@ -1112,7 +1112,7 @@
     const wrap = el("article", `flow-event kind-${event.kind}${linked ? " is-linked" : ""}`);
 
     const time = el("div", "flow-time");
-    time.append(el("span", "flow-step-label", `STEP ${String(sequenceNumber).padStart(2, "0")}`));
+    time.append(el("span", "flow-step-label", `Step ${String(sequenceNumber).padStart(2, "0")}`));
     time.append(el("strong", null, formatClock(event.timestamp)));
     if (previousTimestamp !== null) {
       const delta = Math.max(0, Math.round(event.timestamp - previousTimestamp));

@@ -2197,3 +2197,1611 @@ td.path-cell {
     text-align: left;
   }
 }
+
+/* Visual refresh: a quieter, more editorial interface for the local explorer. */
+:root {
+  --paper: #f5f6f8;
+  --white: #ffffff;
+  --black: #111416;
+  --ink: #24282d;
+  --muted: #69727c;
+  --faint: #99a2ab;
+  --line: #e0e4e8;
+  --line-strong: #cbd2d9;
+  --panel-soft: #f4f6f8;
+  --blue: #1769e8;
+  --blue-soft: #edf4ff;
+  --green: #21804e;
+  --green-soft: #edf8f1;
+  --amber: #9a6500;
+  --amber-soft: #fff7e5;
+  --red: #a12c3b;
+  --red-soft: #fff0f2;
+  --radius-lg: 20px;
+  --radius-md: 15px;
+  --radius-sm: 10px;
+  --sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background:
+    radial-gradient(circle at 88% -8%, rgba(23, 105, 232, 0.07), transparent 28rem),
+    var(--paper);
+  font-family: var(--sans);
+}
+
+.app-shell {
+  width: min(calc(100% - 64px), 1420px);
+}
+
+.site-header {
+  min-height: 88px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.brand {
+  gap: 11px;
+}
+
+.brand-name {
+  margin-top: 5px;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.header-meta {
+  gap: 8px;
+}
+
+.privacy-chip,
+.version-chip {
+  min-height: 29px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.66);
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(17, 20, 22, 0.03);
+}
+
+.privacy-chip {
+  color: var(--green);
+}
+
+.version-chip {
+  color: var(--muted);
+}
+
+main {
+  padding: 78px 0 88px;
+}
+
+.empty-state {
+  max-width: none;
+}
+
+.hero-layout {
+  display: block;
+}
+
+.hero-main {
+  max-width: 940px;
+}
+
+.eyebrow,
+.section-label,
+.column-label {
+  color: var(--muted);
+  letter-spacing: 0.13em;
+}
+
+.eyebrow-line {
+  width: 28px;
+  height: 2px;
+  background: var(--blue);
+  border-radius: 999px;
+}
+
+h1 {
+  font-weight: 700;
+  letter-spacing: -0.075em;
+}
+
+.empty-state h1 {
+  max-width: 850px;
+  margin: 25px 0 21px;
+  font-size: clamp(3.4rem, 7.6vw, 6.6rem);
+  line-height: 0.94;
+}
+
+.hero-copy {
+  max-width: 635px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
+  line-height: 1.68;
+}
+
+.dropzone {
+  max-width: 790px;
+  margin-top: 38px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px dashed #b9c3cd;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(17, 20, 22, 0.045);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.dropzone:hover,
+.dropzone.is-dragging {
+  background: var(--white);
+  border-color: var(--blue);
+  box-shadow: 0 17px 34px rgba(23, 105, 232, 0.11);
+  transform: translateY(-2px);
+}
+
+.dropzone-icon {
+  width: 54px;
+  height: 54px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border: 0;
+  border-radius: 14px;
+}
+
+.dropzone-icon svg {
+  width: 29px;
+  height: 29px;
+  stroke-width: 1.7;
+}
+
+.dropzone-copy strong {
+  font-size: 1rem;
+}
+
+.dropzone-copy span {
+  color: var(--muted);
+}
+
+.button {
+  min-height: 42px;
+  padding: 0 17px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.button-primary {
+  box-shadow: 0 6px 14px rgba(17, 20, 22, 0.16);
+}
+
+.button-primary:hover {
+  background: #2a2f35;
+  box-shadow: 0 8px 18px rgba(17, 20, 22, 0.2);
+  transform: translateY(-1px);
+}
+
+.button-secondary {
+  box-shadow: 0 3px 9px rgba(17, 20, 22, 0.04);
+}
+
+.local-note {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.empty-guide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 88px;
+}
+
+.guide-card {
+  min-height: 170px;
+  padding: 22px 26px 22px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line-strong);
+  border-radius: 0;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.guide-card + .guide-card {
+  padding-left: 26px;
+  border-left: 1px solid var(--line);
+}
+
+.guide-card:hover {
+  border-top-color: var(--blue);
+  transform: translateY(-2px);
+}
+
+.guide-number {
+  color: var(--blue);
+  font-family: var(--sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+}
+
+.guide-card h2 {
+  margin: 31px 0 8px;
+  font-size: 1.08rem;
+}
+
+.guide-card p {
+  max-width: 320px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.workspace-heading {
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.workspace-heading h1 {
+  margin: 16px 0 8px;
+  font-size: clamp(2.7rem, 5.3vw, 5.4rem);
+  line-height: 0.94;
+}
+
+.report-meta {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.workspace-actions {
+  padding-top: 4px;
+}
+
+.file-size,
+.table-count {
+  font-family: var(--sans);
+  letter-spacing: 0.08em;
+}
+
+.privacy-banner {
+  min-height: 53px;
+  margin-bottom: 16px;
+  padding: 11px 16px;
+  background: rgba(237, 248, 241, 0.8);
+  border: 1px solid #c9e7d4;
+  border-radius: 13px;
+  box-shadow: 0 5px 14px rgba(33, 128, 78, 0.04);
+}
+
+.stat-grid {
+  gap: 14px;
+  margin-bottom: 17px;
+}
+
+.stat-card {
+  position: relative;
+  min-height: 133px;
+  padding: 20px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(203, 210, 217, 0.78);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(17, 20, 22, 0.045);
+}
+
+.stat-card::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: var(--blue);
+  content: "";
+}
+
+.stat-card:nth-child(2)::before {
+  background: #8b9aab;
+}
+
+.stat-card:nth-child(3)::before {
+  background: #8f76c7;
+}
+
+.stat-card:nth-child(4)::before {
+  background: var(--green);
+}
+
+.stat-card:nth-child(5)::before {
+  background: var(--amber);
+}
+
+.stat-card:first-child {
+  color: var(--white);
+  background: var(--black);
+  border-color: var(--black);
+  box-shadow: 0 14px 30px rgba(17, 20, 22, 0.15);
+}
+
+.stat-card:first-child .stat-label,
+.stat-card:first-child .stat-detail {
+  color: #aeb8c1;
+}
+
+.stat-card:first-child .stat-value {
+  color: var(--white);
+}
+
+.stat-label {
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+}
+
+.stat-value {
+  margin-top: 16px;
+  font-size: clamp(1.55rem, 2.75vw, 2.1rem);
+}
+
+.stat-detail {
+  margin-top: 10px;
+  font-size: 0.75rem;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(203, 210, 217, 0.82);
+  border-radius: 20px;
+  box-shadow: 0 13px 34px rgba(17, 20, 22, 0.055);
+}
+
+.overview-grid {
+  gap: 17px;
+}
+
+.extraction-panel,
+.pulse-panel {
+  min-height: 312px;
+  padding: 26px;
+}
+
+.panel-heading h2 {
+  font-size: clamp(1.12rem, 2vw, 1.5rem);
+  font-weight: 700;
+}
+
+.panel-index {
+  width: 29px;
+  height: 29px;
+  border-radius: 9px;
+  font-family: var(--sans);
+  font-size: 0.69rem;
+}
+
+.extraction-columns {
+  gap: 30px;
+  margin-top: 34px;
+}
+
+.field-list {
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.field-list li {
+  font-size: 0.79rem;
+}
+
+.tabs-wrap {
+  margin: 38px 0 17px;
+  padding: 4px;
+  overflow-x: auto;
+  background: #e9edf1;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.tabs {
+  gap: 4px;
+}
+
+.tab {
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 0.81rem;
+  transition: color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+.tab::after {
+  display: none;
+}
+
+.tab:hover,
+.tab.is-active {
+  color: var(--black);
+  background: var(--white);
+  box-shadow: 0 3px 10px rgba(17, 20, 22, 0.08);
+}
+
+.table-heading {
+  padding: 25px 26px 0;
+}
+
+.table-intro {
+  margin: 12px 26px 20px;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.table-count {
+  padding: 6px 10px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: #cfe0fa;
+}
+
+.flow-brief,
+.flow-map {
+  margin-right: 26px;
+  margin-left: 26px;
+  background: #f7f9fb;
+  border-color: var(--line);
+  border-radius: 14px;
+}
+
+.flow-brief {
+  padding: 15px 17px;
+}
+
+.flow-map {
+  padding: 17px;
+}
+
+.flow-controls {
+  margin-right: 26px;
+  margin-left: 26px;
+}
+
+.flow-filter {
+  min-height: 31px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.84);
+  border-color: var(--line-strong);
+  border-radius: 999px;
+}
+
+.flow-filter:hover,
+.flow-filter.is-active {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: #bcd2f2;
+}
+
+.flow-summary {
+  gap: 8px;
+  margin: 0 26px 20px;
+}
+
+.flow-chip {
+  padding: 9px 12px;
+  background: #f7f9fb;
+  border-color: var(--line);
+  border-radius: 10px;
+}
+
+.flow-list {
+  padding: 9px 26px 30px;
+  background: #f7f9fb;
+}
+
+.flow-card {
+  margin-bottom: 16px;
+  padding: 17px 18px;
+  border-color: var(--line);
+  border-radius: 17px;
+  box-shadow: 0 8px 21px rgba(17, 20, 22, 0.055);
+}
+
+.flow-card::before {
+  width: 3px;
+  border-radius: 17px 0 0 17px;
+}
+
+.flow-event.is-linked .flow-card {
+  border-color: #cfe0fa;
+}
+
+.flow-stage {
+  padding: 13px 14px;
+  background: #f7f8fa;
+  border-color: #e1e5e9;
+  border-radius: 11px;
+}
+
+.flow-stage.k-cloud {
+  background: #f0f5ff;
+  border-color: #d5e3fa;
+}
+
+.flow-stage.k-response {
+  background: #f0faf4;
+  border-color: #d1ead9;
+}
+
+.record-list,
+.table-scroll {
+  border-top-color: var(--line);
+}
+
+.record-summary {
+  padding: 17px 26px;
+  transition: background 160ms ease;
+}
+
+.record-summary:hover,
+.record[open] .record-summary {
+  background: #f8fafc;
+}
+
+.summary-arrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+}
+
+.record-body {
+  padding: 0 26px 24px;
+  background: #f4f7f9;
+}
+
+.detail-grid {
+  gap: 13px;
+  padding-top: 18px;
+}
+
+.detail-card {
+  padding: 16px;
+  border: 1px solid #e0e5e9;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(17, 20, 22, 0.025);
+}
+
+.request-readout {
+  background: #f5f7f9;
+  border-left-color: var(--blue);
+  border-radius: 7px;
+}
+
+.site-footer {
+  padding-bottom: 28px;
+  color: var(--faint);
+}
+
+.error-toast {
+  right: 28px;
+  bottom: 28px;
+  border-radius: 13px;
+  box-shadow: 0 16px 34px rgba(17, 20, 22, 0.14);
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    width: min(calc(100% - 28px), 1420px);
+  }
+
+  .site-header {
+    min-height: 74px;
+  }
+
+  .brand-name {
+    font-size: 0.98rem;
+  }
+
+  main {
+    padding: 51px 0 60px;
+  }
+
+  .empty-state h1 {
+    margin-top: 21px;
+    font-size: clamp(3rem, 16vw, 4.6rem);
+  }
+
+  .hero-copy {
+    font-size: 1rem;
+  }
+
+  .dropzone {
+    margin-top: 29px;
+  }
+
+  .empty-guide {
+    margin-top: 61px;
+  }
+
+  .guide-card {
+    min-height: auto;
+    padding: 18px 0 21px;
+  }
+
+  .guide-card + .guide-card {
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .guide-card h2 {
+    margin-top: 19px;
+  }
+
+  .workspace-heading h1 {
+    font-size: clamp(2.7rem, 14vw, 4rem);
+  }
+
+  .stat-card {
+    min-height: 116px;
+    padding: 15px;
+  }
+
+  .stat-value {
+    margin-top: 14px;
+    font-size: 1.42rem;
+  }
+
+  .extraction-panel,
+  .pulse-panel,
+  .table-heading,
+  .overview-note-panel,
+  .flow-brief,
+  .flow-map,
+  .flow-controls {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .table-intro {
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
+  .flow-brief,
+  .flow-map,
+  .flow-controls {
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
+  .flow-summary {
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
+  .flow-list {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .record-summary {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .record-body {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+.brand {
+  gap: 0;
+}
+
+.brand-name {
+  margin-top: 0;
+  color: var(--black);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* ==========================================================================
+   Frosted plane — light interface.
+
+   The frost is not decoration: it marks the privacy boundary. Anything that
+   happened on the device is crisp opaque paper. Anything that left for
+   Private Cloud Compute sits behind glass, tinted with the cloud teal.
+   Floating chrome (header bar, tab strip, toast) is frosted too, because it
+   hovers above the page rather than belonging to it.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  --paper: #f4f5f7;
+  --white: #ffffff;
+  --black: #0e1116;
+  --ink: #2b3138;
+  --muted: #616a75;
+  --faint: #8a929c;
+  --line: rgba(14, 17, 22, 0.1);
+  --line-strong: rgba(14, 17, 22, 0.18);
+  --panel-soft: #f7f8fa;
+
+  /* cloud teal stands in for every former blue */
+  --blue: #256e71;
+  --blue-soft: rgba(37, 110, 113, 0.1);
+  --green: #146a46;
+  --green-soft: rgba(20, 106, 70, 0.09);
+  --amber: #8a5a00;
+  --amber-soft: rgba(138, 90, 0, 0.1);
+  --red: #a81f36;
+  --red-soft: rgba(168, 31, 54, 0.07);
+
+  /* glass */
+  --frost: rgba(255, 255, 255, 0.58);
+  --frost-strong: rgba(255, 255, 255, 0.74);
+  --frost-cloud: rgba(238, 248, 248, 0.6);
+  --frost-edge: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --frost-hair: rgba(14, 17, 22, 0.08);
+  --frost-hair-cloud: rgba(37, 110, 113, 0.22);
+  --frost-shadow: 0 14px 34px rgba(14, 17, 22, 0.09), 0 2px 6px rgba(14, 17, 22, 0.04);
+  --frost-shadow-sm: 0 6px 18px rgba(14, 17, 22, 0.07);
+  --blur: blur(20px) saturate(180%);
+  --blur-sm: blur(12px) saturate(170%);
+
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+}
+
+html {
+  background: var(--paper);
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  position: relative;
+  color: var(--ink);
+  background: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the grid is what the frost bends; without it, glass on white is invisible */
+body::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(14, 17, 22, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 17, 22, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  content: "";
+  pointer-events: none;
+}
+
+body::after {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  background:
+    radial-gradient(760px 420px at 88% -4%, rgba(37, 110, 113, 0.07), transparent 70%),
+    radial-gradient(680px 460px at 6% 96%, rgba(14, 17, 22, 0.05), transparent 72%);
+  content: "";
+  pointer-events: none;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 48px, 1320px);
+}
+
+::selection {
+  background: rgba(37, 110, 113, 0.16);
+}
+
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* --- floating frosted bar ------------------------------------------------ */
+
+.site-header {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  min-height: 58px;
+  margin-top: 14px;
+  padding: 0 18px;
+  background: var(--frost);
+  border: 1px solid var(--frost-hair);
+  border-radius: var(--radius-md);
+  box-shadow: var(--frost-shadow-sm), var(--frost-edge);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.brand-name {
+  color: var(--black);
+  font-size: 1rem;
+  font-weight: 640;
+  letter-spacing: -0.015em;
+}
+
+.privacy-chip,
+.version-chip {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+  font-size: 0.74rem;
+  font-weight: 560;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.privacy-dot {
+  background: var(--green);
+}
+
+/* --- labels: sentence case, weight carries the hierarchy ----------------- */
+
+.eyebrow,
+.section-label,
+.column-label,
+.stat-label,
+.flow-brief-label,
+.flow-map-label,
+.flow-controls-label,
+.flow-stage-title,
+.flow-excerpt-label,
+.flow-map-node-title,
+.summary-preview-label,
+.detail-card h3,
+th {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 580;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.stat-label,
+.flow-map-node-title,
+.flow-excerpt-label,
+.summary-preview-label,
+.detail-card h3,
+.flow-stage-title {
+  font-size: 0.76rem;
+}
+
+.eyebrow-line {
+  width: 26px;
+  background: var(--black);
+}
+
+h1 {
+  font-weight: 660;
+  letter-spacing: -0.04em;
+}
+
+.empty-state h1 {
+  max-width: 18ch;
+  margin: 18px 0 20px;
+  font-size: clamp(2.6rem, 5.2vw, 4.4rem);
+  line-height: 1.02;
+}
+
+.workspace-heading h1 {
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+.hero-copy {
+  max-width: 58ch;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* --- device plane: crisp paper, hairlines, no shadow --------------------- */
+
+.panel,
+.stat-card,
+.guide-card,
+.detail-card,
+.flow-chip,
+.flow-map-node,
+.flow-brief {
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.panel {
+  border-radius: var(--radius-lg);
+}
+
+.stat-card,
+.guide-card {
+  border-radius: var(--radius-md);
+}
+
+/* the one inverted tile: the count that says how much is in the file */
+.stat-card:first-child {
+  color: #ffffff;
+  background: var(--black);
+  border-color: var(--black);
+  box-shadow: none;
+}
+
+.stat-card:first-child .stat-label,
+.stat-card:first-child .stat-detail {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.stat-card:first-child .stat-value {
+  color: #ffffff;
+}
+
+.stat-card::before {
+  height: 2px;
+  background: var(--line-strong);
+}
+
+.stat-card:nth-child(2)::before,
+.stat-card:nth-child(3)::before {
+  background: var(--blue);
+}
+
+.stat-card:nth-child(4)::before {
+  background: var(--green);
+}
+
+.stat-card:nth-child(5)::before {
+  background: var(--amber);
+}
+
+.stat-value,
+.pulse-value,
+.flow-chip-value,
+.summary-stat strong,
+.flow-fact-value,
+.flow-time strong,
+td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- hero dropzone: paper that frosts when it is ready to receive -------- */
+
+.dropzone {
+  max-width: 800px;
+  margin-top: 34px;
+  padding: 20px;
+  background: var(--white);
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 200ms ease, transform 180ms ease;
+}
+
+.dropzone:hover,
+.dropzone:focus-visible,
+.dropzone.is-dragging {
+  background: var(--frost-strong);
+  border-color: var(--blue);
+  border-style: solid;
+  box-shadow: var(--frost-shadow), var(--frost-edge);
+  transform: translateY(-2px);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.dropzone-icon {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border: 1px solid rgba(37, 110, 113, 0.18);
+  border-radius: 12px;
+}
+
+.dropzone-copy strong {
+  color: var(--black);
+  font-size: 1.02rem;
+}
+
+.local-note svg {
+  stroke: var(--green);
+}
+
+/* --- buttons ------------------------------------------------------------- */
+
+.button {
+  border-radius: 10px;
+  font-weight: 620;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.button-primary {
+  color: #ffffff;
+  background: var(--black);
+  border-color: var(--black);
+  box-shadow: none;
+}
+
+.button-primary:hover {
+  background: #23282f;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.button-secondary {
+  color: var(--black);
+  background: var(--frost-strong);
+  border-color: var(--line-strong);
+  box-shadow: none;
+  -webkit-backdrop-filter: var(--blur-sm);
+  backdrop-filter: var(--blur-sm);
+}
+
+.button-secondary:hover {
+  background: #ffffff;
+  border-color: var(--black);
+}
+
+/* --- guide cards: a rule per view, not a step number --------------------- */
+
+.empty-guide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 70px;
+}
+
+.guide-card {
+  position: relative;
+  min-height: 150px;
+  padding: 24px 22px 22px;
+  border-top: 1px solid var(--line);
+  transition: border-color 160ms ease;
+}
+
+.guide-card + .guide-card {
+  padding-left: 22px;
+  border-left: 1px solid var(--line);
+}
+
+.guide-card::after {
+  position: absolute;
+  top: -1px;
+  left: 22px;
+  width: 44px;
+  height: 2px;
+  background: var(--black);
+  content: "";
+}
+
+.guide-card:nth-child(2)::after {
+  background: var(--blue);
+}
+
+.guide-card:nth-child(3)::after {
+  background: var(--green);
+}
+
+.guide-card:hover {
+  border-color: var(--line-strong);
+  transform: none;
+}
+
+.guide-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.guide-card p {
+  font-size: 0.88rem;
+}
+
+/* --- privacy banner ------------------------------------------------------ */
+
+.privacy-banner {
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid rgba(20, 106, 70, 0.22);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+.privacy-banner-icon {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+/* --- tabs: frosted strip above the page --------------------------------- */
+
+.tabs-wrap {
+  padding: 5px;
+  background: var(--frost);
+  border: 1px solid var(--frost-hair);
+  border-radius: var(--radius-md);
+  box-shadow: var(--frost-shadow-sm), var(--frost-edge);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.tab {
+  color: var(--muted);
+  border-radius: 9px;
+  font-weight: 600;
+}
+
+.tab:hover {
+  color: var(--black);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+.tab.is-active {
+  color: var(--black);
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(14, 17, 22, 0.12);
+}
+
+/* --- cloud plane: frosted, tinted, blurred ------------------------------- */
+
+.flow-event.kind-cloud .flow-card,
+.flow-stage.k-cloud,
+.flow-map-node.k-cloud {
+  background: var(--frost-cloud);
+  border-color: var(--frost-hair-cloud);
+  box-shadow: var(--frost-shadow-sm), var(--frost-edge);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.flow-map-node.k-cloud {
+  border-top: 3px solid var(--blue);
+}
+
+.flow-map-node.k-device {
+  border-top: 3px solid var(--black);
+}
+
+.flow-map-node.k-result {
+  border-top: 3px solid var(--green);
+}
+
+.flow-map-step {
+  color: var(--ink);
+  background: var(--panel-soft);
+  border-color: var(--line);
+}
+
+.flow-map-node.k-cloud .flow-map-step {
+  color: var(--blue);
+  background: rgba(37, 110, 113, 0.12);
+  border-color: var(--frost-hair-cloud);
+}
+
+.flow-map-node.k-result .flow-map-step {
+  color: var(--green);
+  background: var(--green-soft);
+  border-color: rgba(20, 106, 70, 0.22);
+}
+
+.flow-map-connector-line,
+.flow-map-connector-line::after {
+  background: var(--line-strong);
+}
+
+.flow-map-connector-line::after {
+  background: none;
+  border-left-color: var(--line-strong);
+}
+
+/* --- session flow -------------------------------------------------------- */
+
+.flow-brief,
+.flow-map {
+  background: var(--white);
+  border-color: var(--line);
+  border-radius: var(--radius-md);
+}
+
+.flow-list {
+  background: var(--panel-soft);
+  border-top-color: var(--line);
+}
+
+.flow-card {
+  background: var(--white);
+  border-color: var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
+.flow-card::before {
+  width: 3px;
+  background: var(--line-strong);
+}
+
+.flow-event.is-linked .flow-card {
+  border-color: rgba(37, 110, 113, 0.28);
+}
+
+.flow-event.is-linked .flow-card::before,
+.flow-event.kind-cloud .flow-card::before {
+  background: var(--blue);
+}
+
+.flow-dot {
+  background: var(--black);
+  box-shadow: 0 0 0 3px var(--panel-soft);
+}
+
+.flow-event.is-linked .flow-dot {
+  background: var(--blue);
+}
+
+.flow-event.kind-cloud .flow-dot {
+  background: var(--white);
+  box-shadow: inset 0 0 0 2.5px var(--blue), 0 0 0 3px var(--panel-soft);
+}
+
+.flow-rail::before {
+  background: var(--line);
+}
+
+.legend-swatch.is-linked {
+  background: var(--blue);
+}
+
+.legend-swatch.is-device {
+  background: var(--black);
+}
+
+.legend-swatch.is-cloud {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--blue);
+}
+
+.kind-chip {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.kind-chip.kind-device {
+  color: var(--ink);
+  background: var(--white);
+  border-color: var(--line-strong);
+}
+
+.kind-chip.kind-linked {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--frost-hair-cloud);
+}
+
+.kind-chip.kind-cloud {
+  color: var(--blue);
+  background: transparent;
+  border-color: var(--blue);
+}
+
+.flow-stage {
+  background: var(--panel-soft);
+  border-color: var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.flow-stage.k-response {
+  background: var(--white);
+  border-color: rgba(20, 106, 70, 0.22);
+}
+
+.stage-dot {
+  background: var(--black);
+}
+
+.flow-stage.k-cloud .stage-dot {
+  background: var(--blue);
+}
+
+.flow-stage.k-response .stage-dot {
+  background: var(--green);
+}
+
+.flow-excerpt {
+  background: var(--white);
+  border-left: 2px solid var(--line-strong);
+  border-radius: 6px;
+}
+
+.flow-stage.k-cloud .flow-excerpt {
+  background: rgba(255, 255, 255, 0.78);
+  border-left-color: var(--blue);
+}
+
+.flow-card-note.is-linked,
+.flow-card-note.is-cloud {
+  color: var(--blue);
+}
+
+.flow-delta.is-gap {
+  color: var(--amber);
+}
+
+.flow-filter {
+  background: var(--white);
+  border-color: var(--line-strong);
+}
+
+.flow-filter:hover,
+.flow-filter.is-active {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--frost-hair-cloud);
+}
+
+.flow-filter span {
+  background: rgba(37, 110, 113, 0.14);
+}
+
+.node-chip {
+  background: var(--white);
+  border-color: var(--line-strong);
+}
+
+.node-chip.good {
+  color: var(--green);
+  background: var(--green-soft);
+  border-color: rgba(20, 106, 70, 0.22);
+}
+
+/* --- tables and records -------------------------------------------------- */
+
+.table-count {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--frost-hair-cloud);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+th {
+  color: var(--faint);
+}
+
+tbody tr:hover td {
+  background: var(--panel-soft);
+}
+
+.type-badge {
+  color: var(--ink);
+  background: var(--panel-soft);
+  border-color: var(--line);
+}
+
+.type-badge.optional {
+  color: var(--amber);
+  background: var(--amber-soft);
+  border-color: rgba(138, 90, 0, 0.22);
+}
+
+.status-badge.good {
+  color: var(--green);
+  background: var(--green-soft);
+  border-color: rgba(20, 106, 70, 0.22);
+}
+
+.status-badge.neutral {
+  background: var(--panel-soft);
+  border-color: var(--line);
+}
+
+.link-badge {
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-color: var(--frost-hair-cloud);
+}
+
+.record-summary:hover,
+.record[open] .record-summary {
+  background: var(--panel-soft);
+}
+
+.record-body {
+  background: var(--panel-soft);
+}
+
+.detail-card {
+  border-radius: var(--radius-sm);
+}
+
+.key-value-row dd.mono-value,
+.payload-details summary,
+.opaque-details summary,
+.flow-fact-value.mono,
+.flow-map-foot-key {
+  color: var(--blue);
+}
+
+.request-readout {
+  background: var(--white);
+  border-left-color: var(--blue);
+  border-radius: 6px;
+}
+
+.payload {
+  color: var(--ink);
+  background: #fbfcfd;
+  border-color: var(--line);
+  border-radius: 8px;
+}
+
+.summary-arrow {
+  border-color: var(--line-strong);
+}
+
+/* --- toast: frosted, because it floats ---------------------------------- */
+
+.error-toast {
+  color: var(--red);
+  background: rgba(255, 252, 252, 0.72);
+  border: 1px solid rgba(168, 31, 54, 0.28);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--frost-shadow), var(--frost-edge);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.error-icon {
+  color: #ffffff;
+  background: var(--red);
+}
+
+.site-footer {
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+/* --- quality floor ------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .dropzone:hover,
+  .dropzone.is-dragging,
+  .button-primary:hover {
+    transform: none;
+  }
+}
+
+@supports not ((-webkit-backdrop-filter: blur(2px)) or (backdrop-filter: blur(2px))) {
+  .site-header,
+  .tabs-wrap,
+  .error-toast,
+  .flow-event.kind-cloud .flow-card,
+  .flow-stage.k-cloud,
+  .flow-map-node.k-cloud {
+    background: rgba(255, 255, 255, 0.96);
+  }
+}
+
+@media (max-width: 700px) {
+  /* the earlier layer re-declared these after the mobile rules, which forced
+     desktop columns onto small screens */
+  .empty-guide {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 44px;
+  }
+
+  .guide-card + .guide-card {
+    padding-left: 22px;
+    border-left: 1px solid var(--line);
+  }
+
+  .extraction-panel,
+  .pulse-panel {
+    min-height: auto;
+  }
+
+  .app-shell {
+    width: min(100% - 28px, 1320px);
+  }
+
+  .site-header {
+    top: 8px;
+    padding: 0 14px;
+  }
+
+  .brand-name {
+    font-size: 0.86rem;
+  }
+
+  .empty-state h1 {
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+  }
+
+  .flow-map-route {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-map-connector {
+    transform: rotate(90deg);
+  }
+
+  .flow-stages {
+    flex-direction: column;
+  }
+
+  .flow-arrow {
+    transform: rotate(90deg);
+  }
+
+  .error-toast {
+    right: 14px;
+    bottom: 14px;
+  }
+}
+
+/* accent rule reads as the card's own top edge, not a floating dash */
+.guide-card {
+  overflow: hidden;
+}
+
+.guide-card::after {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+}
+
+/* the dropzone is glass from the start: it sits above the page, waiting */
+.dropzone {
+  background: var(--frost);
+  box-shadow: var(--frost-shadow-sm), var(--frost-edge);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+.dropzone:hover,
+.dropzone:focus-visible,
+.dropzone.is-dragging {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+body::before {
+  background-image:
+    linear-gradient(rgba(14, 17, 22, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 17, 22, 0.028) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* remaining micro-labels: sentence case, like every other label here */
+.flow-step-label,
+.flow-arrow-label,
+.stage-step,
+.flow-map-connector-label {
+  color: var(--faint);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.flow-step-label {
+  font-size: 0.66rem;
+}
+
+.flow-arrow-label {
+  font-size: 0.62rem;
+}
+
+/* teal marks cloud-related counts only; the rest stay neutral */
+.stat-card:nth-child(3)::before {
+  background: var(--line-strong);
+}

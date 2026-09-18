@@ -7,17 +7,14 @@
       name="description"
       content="A local-only explorer for Apple Intelligence JSON reports."
     />
-    <title>Apple Intelligence Report Explorer</title>
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <title>Apple Intelligence Report Deserializer</title>
+    <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
     <div class="app-shell">
       <header class="site-header">
-        <a class="brand" href="#top" aria-label="Apple Intelligence Report Explorer home">
-          <span>
-            <span class="brand-kicker">Apple Intelligence / Local analysis</span>
-            <span class="brand-name">Report Explorer</span>
-          </span>
+        <a class="brand" href="#top" aria-label="Apple Intelligence Report Analyzer home">
+          <span class="brand-name">Apple Intelligence Report Deserializer</span>
         </a>
 
         <div class="header-meta">
@@ -31,46 +28,48 @@
 
       <main id="top">
         <section class="empty-state" id="emptyState" aria-labelledby="emptyTitle">
-          <div class="eyebrow"><span class="eyebrow-line"></span>Report analysis / Local workstation</div>
-          <h1 id="emptyTitle">Apple Intelligence report, parsed clearly.</h1>
-          <p class="hero-copy">
-            Open a JSON export to review model activity, Private Cloud Compute traces, and the
-            fields worth keeping. The file never leaves this browser tab.
-          </p>
+          <div class="hero-layout">
+            <div class="hero-main">
+              <div class="eyebrow"><span class="eyebrow-line"></span>Report analysis / Local workstation</div>
+              <h1 id="emptyTitle">Apple Intelligence report, parsed clearly.</h1>
+              <p class="hero-copy">
+                Open a JSON export to review model activity, Private Cloud Compute traces, and the
+                fields worth keeping. The file never leaves this browser tab.
+              </p>
 
-          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="fileInput">
-            <input id="fileInput" type="file" accept=".json,application/json" hidden />
-            <div class="dropzone-icon" aria-hidden="true">
-              <svg viewBox="0 0 48 48" role="presentation">
-                <path d="M24 33V10m0 0-8 8m8-8 8 8" />
-                <path d="M12 27.5H9.5a4 4 0 0 0-4 4v4a4 4 0 0 0 4 4h29a4 4 0 0 0 4-4v-4a4 4 0 0 0-4-4H36" />
-                <path d="M14 39.5h20" />
-              </svg>
+              <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="fileInput">
+                <input id="fileInput" type="file" accept=".json,application/json" hidden />
+                <div class="dropzone-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" role="presentation">
+                    <path d="M24 33V10m0 0-8 8m8-8 8 8" />
+                    <path d="M12 27.5H9.5a4 4 0 0 0-4 4v4a4 4 0 0 0 4 4h29a4 4 0 0 0 4-4v-4a4 4 0 0 0-4-4H36" />
+                    <path d="M14 39.5h20" />
+                  </svg>
+                </div>
+                <div class="dropzone-copy">
+                  <strong>Drop a JSON report here</strong>
+                  <span>or browse this device</span>
+                </div>
+                <button class="button button-primary" id="chooseFile" type="button">Choose report</button>
+              </div>
+              <p class="local-note">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.2 16 4.5v4.2c0 4.1-2.5 7.2-6 9.1-3.5-1.9-6-5-6-9.1V4.5l6-2.3Z" /><path d="m7.2 9.9 1.8 1.8 3.9-4" /></svg>
+                Your file stays in this browser tab. Nothing is uploaded.
+              </p>
             </div>
-            <div class="dropzone-copy">
-              <strong>Drop a JSON report here</strong>
-              <span>or browse this device</span>
-            </div>
-            <button class="button button-primary" id="chooseFile" type="button">Choose report</button>
+
           </div>
-          <p class="local-note">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.2 16 4.5v4.2c0 4.1-2.5 7.2-6 9.1-3.5-1.9-6-5-6-9.1V4.5l6-2.3Z" /><path d="m7.2 9.9 1.8 1.8 3.9-4" /></svg>
-            Your file stays in this browser tab. Nothing is uploaded.
-          </p>
 
           <div class="empty-guide">
             <article class="guide-card">
-              <span class="guide-number">01 / REVIEW</span>
               <h2>Request activity</h2>
               <p>Read timestamps, use cases, model versions, request excerpts, and payload sizes.</p>
             </article>
             <article class="guide-card">
-              <span class="guide-number">02 / VERIFY</span>
               <h2>Infrastructure</h2>
               <p>Decode pipeline parameters and inspect node state without losing the raw record.</p>
             </article>
             <article class="guide-card">
-              <span class="guide-number">03 / MAP</span>
               <h2>Schema</h2>
               <p>Inspect every key, type, and frequency so the extraction boundary is obvious.</p>
             </article>
@@ -118,11 +117,11 @@
                 </div>
                 <span class="table-count" id="flowCount"></span>
               </div>
-              <p class="table-intro">Start with the route map, then read the numbered events in time order. A blue journey connects a device request to its matching Private Cloud Compute record through the request ID.</p>
+              <p class="table-intro">Start with the route map, then read the events in time order. A connected journey ties a device request to its Private Cloud Compute record through the shared request ID.</p>
               <div class="flow-brief">
                 <div class="flow-brief-copy">
                   <span class="flow-brief-label">How to read this view</span>
-                  <p>Each row represents one chronological record or connected journey. Blue rows show a matched handoff, gray rows stay on the device, and amber rows are cloud records without a matching device request.</p>
+                  <p>Each row is one record, in the order it happened. Frosted rows crossed into Private Cloud Compute; plain white rows never left this device.</p>
                 </div>
                 <div class="flow-legend" aria-label="Session flow legend">
                   <span class="legend-item"><span class="legend-swatch is-linked" aria-hidden="true"></span>Device ↔ cloud</span>
@@ -253,6 +252,6 @@
       </footer>
     </div>
 
-    <script src="app.js?v=3" defer></script>
+    <script src="app.js?v=4" defer></script>
   </body>
 </html>
